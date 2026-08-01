@@ -164,7 +164,7 @@
     }
 
     .due {
-      margin-left: 0.1em;
+      margin-left: .20em;
       color: var(--rust);
       font-size: clamp(6.2rem, 11vw, 11.25rem);
       font-style: italic;
@@ -422,7 +422,7 @@
       .hero-content { padding-top: 76px; }
       h1 { line-height: .67; }
       .past, .due { font-size: clamp(6.1rem, 34vw, 10rem); }
-      .due { margin-left: .03em; }
+      .due { margin-left: .21em; }
       .credit { margin-top: 48px; }
       .intro { font-size: clamp(1.8rem, 9vw, 2.65rem); }
       .actions { width: 100%; flex-direction: column; }
@@ -444,9 +444,95 @@
       footer { flex-direction: column; }
     }
 
+    /* Cinematic opening animations */
+    .eyebrow {
+      animation: eyebrow-enter .7s ease-out .1s both;
+    }
+
+    .past {
+      animation: past-enter .9s cubic-bezier(.2,.8,.2,1) .25s both;
+    }
+
+    .due {
+      animation: due-enter .95s cubic-bezier(.2,.8,.2,1) .42s both;
+    }
+
+    .credit { animation: fade-up .8s ease-out .65s both; }
+    .intro { animation: fade-up .8s ease-out .78s both; }
+    .actions { animation: fade-up .8s ease-out .9s both; }
+    .hero-art { animation: photo-enter 1.1s ease-out .45s both; }
+
+    .hero-art img {
+      animation: cinematic-zoom 14s ease-in-out 1.5s infinite alternate;
+    }
+
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .85s ease, transform .85s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .scroll-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (hover: hover) {
+      .actor-card {
+        transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+      }
+
+      a.actor-card:hover { transform: translateY(-5px); }
+    }
+
+    @keyframes eyebrow-enter {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(-6px); }
+    }
+
+    @keyframes past-enter {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes due-enter {
+      from { opacity: 0; transform: translate(-.12em, .22em); }
+      to { opacity: 1; transform: translate(0, .07em); }
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes photo-enter {
+      from { opacity: 0; transform: translateX(28px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes cinematic-zoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.01); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       * { transition: none !important; }
+      .eyebrow,
+      .past,
+      .due,
+      .credit,
+      .intro,
+      .actions,
+      .hero-art,
+      .hero-art img {
+        animation: none !important;
+      }
+
+      .scroll-reveal {
+        opacity: 1;
+        transform: none;
+      }
     }
   </style>
 </head>
@@ -470,7 +556,7 @@
             <span class="due">Due</span>
           </h1>
           <p class="credit">Written by and starring <strong>Fariso Jordan</strong></p>
-          <p class="intro">An independent short film dedicated to Black maternal health. Challenging a system that too often fails Black women.</p>
+          <p class="intro">An independent short film. Dedicated to Black maternal health. Challenging a system that too often fails Black women.</p>
           <div class="actions">
             <a class="button primary" href="#donate">Support Past Due</a>
             <a class="button" href="#trailer">Watch the trailer</a>
@@ -567,6 +653,31 @@
     <p>Setting the Stage</p>
   </footer>
 
+  <script>
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!reducedMotion) {
+      const revealItems = document.querySelectorAll(
+        ".section-head, .video-wrap, .donate-copy, .donate-actions, .actor-grid"
+      );
+
+      revealItems.forEach((item) => item.classList.add("scroll-reveal"));
+
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: .15,
+        rootMargin: "0px 0px -40px 0px"
+      });
+
+      revealItems.forEach((item) => revealObserver.observe(item));
+    }
+  </script>
   <script src="https://widgets.givebutter.com/latest.umd.cjs?acct=gDd9l9vcQ2LluSVt"></script>
 </body>
 </html>
