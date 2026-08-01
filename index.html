@@ -253,6 +253,12 @@
     .button.primary:hover,
     .button.primary:focus-visible { background: #e05637; }
 
+    .trailer-replay {
+      color: var(--cream);
+      cursor: pointer;
+      font-family: "Montserrat", Arial, sans-serif;
+    }
+
     .section {
       min-height: 100svh;
       padding: clamp(70px, 8vw, 120px) clamp(22px, 5vw, 80px);
@@ -515,6 +521,132 @@
       to { transform: scale(1.01); }
     }
 
+    body.trailer-open { overflow: hidden; }
+
+    .trailer-welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      padding: clamp(16px, 3vw, 42px);
+      display: grid;
+      place-items: center;
+      overflow-y: auto;
+      background: rgba(4, 5, 4, .94);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .42s ease, visibility .42s ease;
+    }
+
+    .trailer-welcome[hidden] { display: none; }
+
+    .trailer-welcome.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .trailer-welcome-card {
+      width: min(1100px, 100%);
+      position: relative;
+      opacity: 0;
+      transform: translateY(34px) scale(.78);
+      transition: opacity .5s ease, transform .7s cubic-bezier(.16,1,.3,1);
+    }
+
+    .trailer-welcome.is-open .trailer-welcome-card {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .trailer-welcome-close {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      z-index: 2;
+      border: 1px solid rgba(240,232,220,.5);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #0b0c0b;
+      color: var(--cream);
+      cursor: pointer;
+      font: 300 1.8rem/1 "Montserrat", Arial, sans-serif;
+    }
+
+    .trailer-welcome-heading {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .trailer-welcome-label {
+      color: var(--gold);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .trailer-welcome-title {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .trailer-welcome-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid rgba(197,161,108,.55);
+      background: #000;
+      box-shadow: 0 40px 100px rgba(0,0,0,.7);
+    }
+
+    .trailer-welcome-frame iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+
+    .trailer-enter {
+      min-height: 58px;
+      margin: 20px auto 0;
+      padding: 0 30px;
+      border: 1px solid var(--rust);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--rust);
+      color: #fff;
+      cursor: pointer;
+      font: 700 .76rem/1 "Montserrat", Arial, sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 760px) {
+      .trailer-welcome { padding: 14px; }
+      .trailer-welcome-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .trailer-welcome-close {
+        width: 44px;
+        height: 44px;
+        top: -10px;
+        right: -6px;
+      }
+      .trailer-enter { width: 100%; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       * { transition: none !important; }
@@ -533,11 +665,37 @@
         opacity: 1;
         transform: none;
       }
+
+      .trailer-welcome,
+      .trailer-welcome-card {
+        transition: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <div class="trailer-welcome" id="trailer-welcome" role="dialog" aria-modal="true" aria-labelledby="trailer-welcome-title" hidden>
+    <div class="trailer-welcome-card">
+      <button class="trailer-welcome-close" type="button" aria-label="Close trailer and enter the site">×</button>
+      <div class="trailer-welcome-heading">
+        <span class="trailer-welcome-label">Setting the Stage presents</span>
+        <h2 class="trailer-welcome-title" id="trailer-welcome-title">Watch the trailer</h2>
+      </div>
+      <div class="trailer-welcome-frame">
+        <iframe
+          id="trailer-welcome-video"
+          data-src="https://www.youtube.com/embed/so4PWZcrcUY?rel=0&amp;autoplay=1&amp;mute=1&amp;playsinline=1"
+          title="Past Due official trailer"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <button class="trailer-enter" type="button">Enter the site</button>
+    </div>
+  </div>
+
   <main>
     <section class="hero" id="home" aria-labelledby="film-title">
       <header class="topbar">
@@ -556,10 +714,10 @@
             <span class="due">Due</span>
           </h1>
           <p class="credit">Written by and starring <strong>Fariso Jordan</strong></p>
-          <p class="intro">An independent short film dedicated to Black maternal health. Challenging a system that too often fails Black women.</p>
+          <p class="intro">An independent short film. Dedicated to Black maternal health. Challenging a system that too often fails Black women.</p>
           <div class="actions">
             <a class="button primary" href="#donate">Support Past Due</a>
-            <a class="button" href="#trailer">Watch the trailer</a>
+            <button class="button trailer-replay" type="button">Watch trailer again</button>
           </div>
         </div>
         <figure class="hero-art">
@@ -568,26 +726,9 @@
       </div>
     </section>
 
-    <section class="section trailer" id="trailer" aria-labelledby="trailer-title">
-      <div class="section-head">
-        <span class="section-number">01</span>
-        <h2 id="trailer-title">Watch the trailer</h2>
-      </div>
-      <div class="video-wrap">
-        <iframe
-          src="https://www.youtube.com/embed/so4PWZcrcUY?rel=0"
-          title="Past Due official trailer"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </section>
-
     <section class="section donate" id="donate" aria-labelledby="donate-title">
       <div class="donate-copy">
-        <span class="section-number">02</span>
+        <span class="section-number">01</span>
         <h2 id="donate-title">Help bring<br>Past Due to life.</h2>
         <p>Your contributions support the post-production of <em>Past Due</em>. Setting the Stage’s first major production is a voice ready to be heard.</p>
       </div>
@@ -605,8 +746,8 @@
 
     <section class="section actors" id="actors" aria-labelledby="actors-title">
       <div class="section-head">
-        <span class="section-number">03</span>
-        <h2 id="actors-title">Follow the actors</h2>
+        <span class="section-number">02</span>
+        <h2 id="actors-title">Follow the Cast</h2>
       </div>
       <div class="actor-grid">
         <a class="actor-card" href="https://www.instagram.com/sofreeriri/" target="_blank" rel="noopener noreferrer">
@@ -656,9 +797,65 @@
   <script>
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const trailerWelcome = document.getElementById("trailer-welcome");
+    const trailerWelcomeVideo = document.getElementById("trailer-welcome-video");
+    const trailerWelcomeClose = trailerWelcome.querySelector(".trailer-welcome-close");
+    const trailerEnter = trailerWelcome.querySelector(".trailer-enter");
+    const trailerReplay = document.querySelector(".trailer-replay");
+    const mainContent = document.querySelector("main");
+    const pageFooter = document.querySelector("footer");
+
+    let trailerWasSeen = false;
+    try {
+      trailerWasSeen = sessionStorage.getItem("past-due-trailer-seen") === "yes";
+    } catch (error) {
+      trailerWasSeen = false;
+    }
+
+    function openTrailerWelcome() {
+      trailerWelcome.hidden = false;
+      document.body.classList.add("trailer-open");
+      mainContent.inert = true;
+      pageFooter.inert = true;
+      trailerWelcomeVideo.src = trailerWelcomeVideo.dataset.src;
+      requestAnimationFrame(() => {
+        trailerWelcome.classList.add("is-open");
+        trailerWelcomeClose.focus();
+      });
+    }
+
+    function closeTrailerWelcome() {
+      trailerWelcome.classList.remove("is-open");
+      document.body.classList.remove("trailer-open");
+      mainContent.inert = false;
+      pageFooter.inert = false;
+      try {
+        sessionStorage.setItem("past-due-trailer-seen", "yes");
+      } catch (error) {}
+
+      window.setTimeout(() => {
+        trailerWelcome.hidden = true;
+        trailerWelcomeVideo.src = "";
+      }, reducedMotion ? 0 : 420);
+    }
+
+    if (!trailerWasSeen) openTrailerWelcome();
+
+    trailerWelcomeClose.addEventListener("click", closeTrailerWelcome);
+    trailerEnter.addEventListener("click", closeTrailerWelcome);
+    trailerReplay.addEventListener("click", openTrailerWelcome);
+    trailerWelcome.addEventListener("click", (event) => {
+      if (event.target === trailerWelcome) closeTrailerWelcome();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && trailerWelcome.classList.contains("is-open")) {
+        closeTrailerWelcome();
+      }
+    });
+
     if (!reducedMotion) {
       const revealItems = document.querySelectorAll(
-        ".section-head, .video-wrap, .donate-copy, .donate-actions, .actor-grid"
+        ".section-head, .donate-copy, .donate-actions, .actor-grid"
       );
 
       revealItems.forEach((item) => item.classList.add("scroll-reveal"));
