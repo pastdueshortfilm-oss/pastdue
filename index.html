@@ -353,6 +353,15 @@
       display: flex;
       flex-direction: column;
       gap: 22px;
+      align-items: center;
+    }
+
+    .donate-feature {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid rgba(89,81,75,.28);
+      box-shadow: 0 24px 55px rgba(35,30,26,.18);
     }
 
     .donate-actions .button { width: 100%; }
@@ -710,7 +719,7 @@
           id="trailer-welcome-video"
           data-src="https://www.youtube.com/embed/_JdLcSKKmRE?rel=0&amp;playsinline=1"
           title="Past Due official trailer"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen>
         </iframe>
@@ -756,6 +765,10 @@
         <p>Your contributions support the post-production of <em>Past Due</em>. Setting the Stage’s first major production is a voice ready to be heard.</p>
       </div>
       <div class="donate-actions">
+        <img
+          class="donate-feature"
+          src="past-due-social-preview.jpg"
+          alt="Past Due, a Setting the Stage production">
         <button
           class="button primary"
           data-gb-account="gDd9l9vcQ2LluSVt"
